@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的工具箱</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+    body{display:flex;height:100vh;overflow:hidden}
+    .sidebar{width:240px;background:#222831;color:#fff;padding:20px;overflow-y:auto}
+    .sidebar h2{margin-bottom:24px;font-size:20px}
+    .sidebar a{display:block;color:#b9b9b9;text-decoration:none;padding:10px 8px;border-radius:6px;margin-bottom:4px}
+    .sidebar a:hover{background:#393e46;color:#fff}
+    .sidebar a.active{background:#00adb5;color:#fff}
+    .main{flex:1;padding:30px;overflow-y:auto;background:#f8f9fa}
+    .tool-panel{display:none}
+    .tool-panel.active{display:block}
+    textarea{width:100%;min-height:220px;padding:12px;margin:10px 0;border:1px solid #ddd;border-radius:6px;font-family:monospace}
+    button{padding:8px 16px;border:none;border-radius:6px;background:#00adb5;color:white;cursor:pointer;margin-right:8px}
+    button:hover{background:#008c94}
+  </style>
+</head>
+<body>
+<div class="sidebar">
+  <h2>🧰 我的工具箱</h2>
+  <a href="#home" class="active" onclick="switchTool('home')">首页</a>
+  <a href="#json" onclick="switchTool('json')">JSON格式化</a>
+  <a href="#base64" onclick="switchTool('base64')">Base64编解码</a>
+</div>
+<div class="main">
+  <!-- 首页 -->
+  <div id="home" class="tool-panel active">
+    <h1>欢迎使用我的工具箱</h1>
+    <p>所有运算在浏览器本地完成，数据不会上传服务器</p>
+  </div>
+
+  <!-- JSON格式化工具 -->
+  <div id="json" class="tool-panel">
+    <h2>JSON格式化</h2>
+    <textarea id="jsonInput" placeholder="粘贴JSON文本在这里"></textarea>
+    <br>
+    <button onclick="formatJson">格式化</button>
+    <button onclick="compressJson">压缩</button>
+    <textarea id="jsonOutput" readonly></textarea>
+  </div>
+
+  <!-- Base64编解码 -->
+  <div id="base64" class="tool-panel">
+    <h2>Base64 编解码</h2>
+    <textarea id="b64Input" placeholder="输入文本"></textarea>
+    <br>
+    <button onclick="toBase64">编码</button>
+    <button onclick="fromBase64">解码</button>
+    <textarea id="b64Output" readonly></textarea>
+  </div>
+</div>
+
+<script>
+// 切换工具面板
+function switchTool(id) {
+  document.querySelectorAll('.tool-panel').forEach(el=>el.classList.remove('active'))
+  document.getElementById(id).classList.add('active')
+  document.querySelectorAll('.sidebar a').forEach(el=>el.classList.remove('active'))
+  event.target.classList.add('active')
+}
+
+// JSON工具
+function formatJson(){
+  try{
+    const raw = document.getElementById('jsonInput').value
+    const result = JSON.stringify(JSON.parse(raw), null, 2)
+    document.getElementById('jsonOutput').value = result
+  }catch(e){
+    document.getElementById('jsonOutput').value = "JSON格式错误！"
+  }
+}
+function compressJson(){
+  try{
+    const raw = document.getElementById('jsonInput').value
+    const result = JSON.stringify(JSON.parse(raw))
+    document.getElementById('jsonOutput').value = result
+  }catch(e){
+    document.getElementById('jsonOutput').value = "JSON格式错误！"
+  }
+}
+
+// Base64工具
+function toBase64(){
+  try{
+    const txt = document.getElementById('b64Input').value
+    const b64 = btoa(unescape(encodeURIComponent(txt)))
+    document.getElementById('b64Output').value = b64
+  }catch(e){
+    document.getElementById('b64Output').value = "转换失败"
+  }
+}
+function fromBase64(){
+  try{
+    const txt = document.getElementById('b64Input').value
+    const str = decodeURIComponent(escape(atob(txt)))
+    document.getElementById('b64Output').value = str
+  }catch(e){
+    document.getElementById('b64Output').value = "Base64无效"
+  }
+}
+</script>
+</body>
+</html>
